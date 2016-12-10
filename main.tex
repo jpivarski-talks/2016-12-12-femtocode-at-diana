@@ -26,6 +26,8 @@
 \usepackage{minted}
 
 \xdefinecolor{darkblue}{rgb}{0.1,0.1,0.7}
+\xdefinecolor{darkgreen}{rgb}{0,0.5,0}
+\xdefinecolor{darkorange}{rgb}{0.8,0.5,0}
 \xdefinecolor{darkred}{rgb}{0.7,0,0}
 \xdefinecolor{dianablue}{rgb}{0.18,0.24,0.31}
 \definecolor{commentgreen}{rgb}{0,0.6,0}
@@ -61,7 +63,7 @@
   morestring=[b]"""
 }
 
-\title[2016-12-12-femtocode-at-diana]{Femtocode: early development of a query language for HEP}
+\title[2016-12-12-femtocode-at-diana]{Femtocode: development of a query \\ language for HEP}
 \author{Jim Pivarski}
 \institute{Princeton -- DIANA}
 \date{December 12, 2016}
@@ -82,7 +84,7 @@
 %\end{frame}
 
 %% \begin{frame}{Motivations}
-%% \textcolor{darkblue}{\underline{Specific motivation}: accelerate data pulls, both}
+%% \textcolor{darkblue}{\underline{Specific motivation}: to accelerate data pulls, both}
 
 %% \begin{center}
 %% \begin{columns}
@@ -106,7 +108,7 @@
 %% \end{center}
 
 %% \vspace{0.2 cm}
-%% \textcolor{gray}{(By ``data pull,'' I mean extract, transform, and filter data from a collaboration's central dataset and download it for further processing.)}
+%% \textcolor{gray}{(By ``data pull,'' I mean extract, transform, and filter data from a collaboration's central dataset and download it for further processing. Right now, we're writing C++ modules.)}
 
 %% \vspace{0.5 cm}
 %% \begin{uncoverenv}<2->
@@ -149,15 +151,15 @@
 
 %% \begin{frame}{How fast {\it should} it be?}
 %% \vspace{0.3 cm}
-%% \textcolor{darkblue}{Suppose we want to plot all CMS $t\bar{t}$ data ever collected.}
+%% \textcolor{darkorange}{\bf Suppose we want to plot all CMS $t\bar{t}$ data ever collected.}
 %% \begin{itemize}
 %% \item About 100~fb$^{-1}$ (\href{http://cms-service-lumi.web.cern.ch/cms-service-lumi/publicplots/int_lumi_cumulative_pp_1.png}{\textcolor{blue}{plot}}) $\times$ 1~nb (\href{https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/CombinedSummaryPlots/SM/ATLAS_p_SMSummary_SqrtS_Zoom/ATLAS_p_SMSummary_SqrtS_Zoom.png}{\textcolor{blue}{plot}}) is 100 million events.
-%% \item Derivation of plotted quantity could involve $\mathcal{O}(100)$ double-precision values per event.
+%% \item Derivation of a plotted quantity could involve $\mathcal{O}(100)$ double-precision values per event.
 %% \item That's only 80~GB of data that needs to be evaluated; anything else is overhead.
 %% \end{itemize}
 
 %% \vspace{0.5 cm}
-%% \textcolor{darkblue}{{\it Single} computer, {\it single} thread:}
+%% \textcolor{darkblue}{{\it \underline{Single}} computer, {\it \underline{single}} thread:}
 
 %% \vspace{0.1 cm}
 %% \begin{description}
@@ -167,7 +169,7 @@
 %% \end{description}
 
 %% \vspace{0.1 cm}
-%% \textcolor{gray}{(Probably close to ``theoretical minimum,'' centralized, distributed processing can help, as can caching.)}
+%% \textcolor{gray}{(Probably close to ``theoretical minimum.'' Distributed processing and multi-user cache can help.)}
 %% \end{frame}
 
 %% \begin{frame}{Role of language}
@@ -175,33 +177,32 @@
 %% Directly filling histograms from the collaboration-wide repository, eliminating private skims, would fundamentally improve analysis workflows. Analysis could become ``interactive.''
 
 %% \vspace{0.5 cm}
-%% \textcolor{darkblue}{How can a language help?}
+%% \textcolor{darkblue}{But\ldots\ how can a language help?}
 
+%% \begin{uncoverenv}<2->
 %% \vspace{0.3 cm}
 %% \begin{itemize}
-%% \item Writing vectorized, one-array-at-a-time algorithms is unnatural.
-%% \item Physicists {\it should} be thinking about one event at a time and muon {\it objects.}
+%% \item Writing vectorized, one-array-at-a-time algorithms is unnatural, distracting from analysis.
+%% \item Physicists {\it should} be thinking about one event at a time and muons as objects.
 %% \end{itemize}
 
-%% \begin{center}
-%% \begin{minipage}{0.7\linewidth}
-%% \textcolor{darkblue}{$\to$ Transforming human concepts into physical execution is what programming languages do.}
-%% \end{minipage}
-%% \end{center}
+%% \vspace{0.3 cm}
+%% \textcolor{darkblue}{Transforming human concepts into physical execution is exactly what programming languages are for.}
+%% \end{uncoverenv}
 %% \end{frame}
 
 %% \begin{frame}{What's wrong with the languages we have?}
 %% \vspace{0.25 cm}
-%% As I said in my June 20 talk, C++ and Python are too expressive to permit these kinds of optimizations.
+%% As I said in \href{https://indico.cern.ch/event/544650/}{\textcolor{blue}{my June 20 talk}}, C++ and Python are too expressive to permit these kinds of optimizations.
 
-%% \vspace{0.2 cm}
+%% \vspace{0.5 cm}
 %% Automatic vectorization is (in general) an unsolved problem in computer science. But building a vectorizable language is relatively easy: they're just less capable. Typically, query languages are vectorizable.
 
 %% \vspace{0.5 cm}
 %% Business intelligence with SQL is typically ``interactive,'' and big data projects are pushing $\mathcal{O}(\mbox{second})$ response times to petabyte scales: Ibis, Impala, Kudu, Drill, \ldots\ others? (\href{http://research.google.com/pubs/pub36632.html}{\textcolor{blue}{Google paper}}).
 
 %% \vspace{0.5 cm}
-%% \textcolor{darkblue}{However, SQL and its relatives are not sufficient for us.}
+%% \textcolor{darkorange}{\bf However, SQL and its relatives are not sufficient for us.}
 %% \end{frame}
 
 %% \begin{frame}[fragile]{Nested query in SQL}
@@ -285,40 +286,246 @@
 %% \end{onlyenv}
 %% \end{frame}
 
-\begin{frame}[fragile]{Femtocode}
-\vspace{0.4 cm}
-Combine the {\it implementation flexibility} of declarative languages like SQL with the {\it expressiveness} of a functional language for dealing with nested structure.
+%% \begin{frame}[fragile]{Femtocode: tiny, declarative code snippets}
+%% \vspace{0.4 cm}
+%% Combine the {\it implementation flexibility} of declarative languages like SQL with the {\it expressiveness} of a functional language for dealing with nested structure.
 
+%% \vspace{0.5 cm}
+%% {\bf Example use:}
+
+%% \small
+%% \begin{minted}{python}
+%% h = db.dataset("ttbar-MC")
+%%   .withColumn(varName = "<Femtocode goes here>")
+%%   .filter("<Femtocode using varName>")
+%%   .flatMap("<Femtocode changing nesting level>")
+%%   .Label(hist1 = Bin(100, -5.0, 5.0, "<Femtocode>"),
+%%          hist2 = Bin(20, 0.0, 100.0, "<Femtocode>"),
+%%          hist3 = Bin(314, -pi, pi, "<Femtocode>"))
+%% \end{minted}
+
+%% \normalsize
+%% followed by Python analysis on {\small\tt h[\textcolor{darkred}{"hist1"}]}, {\small\tt h[\textcolor{darkred}{"hist2"}]}\ldots
+
+%% \vspace{0.1 cm}
+%% \begin{uncoverenv}<2->
+%% Everything in quotes is the statically checked and optimized big data pull; everything outside is flexible Python.
+
+%% \vspace{0.1 cm}
+%% Histogrammar ({\tt\small Label} and {\tt\small Bin}) is a necessary component.
+%% \end{uncoverenv}
+%% \end{frame}
+
+\begin{frame}[fragile]{Working examples}
+\vspace{0.3 cm}
+\begin{lstlisting}[language=python]
+>>> from femtocode.parser import parse
+>>> print ast.dump(parse("""
+... tracks.filter(abs($1.eta) < 2.4)
+...       .maxBy($1.hits.size)
+...       .map($1.pt)
+...       .impute(0.0)
+... """))
+\end{lstlisting}
+\begin{lstlisting}[language=python,basicstyle=\ttfamily\scriptsize]
+Suite(assignments=[], expression=FcnCall(function=Attribute(value=FcnCall(function=Attribute(value=FcnCall(function=Attribute(value=FcnCall(function=Attribute(value=Name(id='tracks', ctx=Load()), attr='filter', ctx=Load()), positional=[Compare(left=FcnCall(function=Name(id='abs', ctx=Load()), positional=[Attribute(value=AtArg(num=1), attr='eta', ctx=Load())], names=[], named=[]), ops=[Lt()], comparators=[Num(n=2.4)])], names=[], named=[]), attr='maxBy', ctx=Load()), positional=[Attribute(value=Attribute(value=AtArg(num=1), attr='hits', ctx=Load()), attr='size', ctx=Load())], names=[], named=[]), attr='map', ctx=Load()), positional=[Attribute(value=AtArg(num=1), attr='pt', ctx=Load())], names=[], named=[]), attr='impute', ctx=Load()), positional=[Num(n=0.0)], names=[], named=[]))
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Working examples}
+\vspace{0.3 cm}
+\begin{lstlisting}[language=python]
+>>> propagateTypes("""
+... data.map(x => x + y)
+... """,
+... data=collection(integer), y=integer)
+collection(integer)
+\end{lstlisting}
+
+\begin{lstlisting}[language=python]
+>>> propagateTypes("""
+... data.map(x => x + y)
+... """,
+... data=collection(integer), y=real)
+collection(real)
+\end{lstlisting}
+
+\begin{lstlisting}[language=python]
+>>> propagateTypes("""
+... data.map(x => x + y)
+... """,
+... data=collection(integer, fewest=10, most=10),
+... y=integer)
+collection(integer, fewest=10, most=10)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Working examples}
+\vspace{0.3 cm}
+\textcolor{darkblue}{Propagate intervals of validity:}
+\begin{lstlisting}[language=python]
+>>> propagateTypes("""
+... data.map(x => x + y)
+... """,
+... data=collection(real(min=3, max=5)),
+... y=real(min=100, max=200))
+collection(real(min=103.0, max=205.0))
+\end{lstlisting}
+
+\vfill
+\textcolor{darkblue}{Properly handle shadowed variable ``x'':}
+\begin{lstlisting}[language=python]
+>>> propagateTypes("""
+... y = x + -100;
+... data.map(x => x + y)
+... """,
+... data=collection(real(min=3, max=5)),
+... x=real(min=100, max=200))
+collection(real(min=3.0, max=105.0))
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Type system is highly granular}
 \vspace{0.5 cm}
-{\bf Example use:}
+Collections have \textcolor{darkblue}{fewest} and \textcolor{darkblue}{most} size attributes, numbers have \textcolor{darkblue}{min} and \textcolor{darkblue}{max} intervals:
+\begin{itemize}
+\item {\tt real(almost(0), 10)} means $\{x | x \in \mathbb{R}\mbox{ and } 0 < x \le 10\}$
+\item {\tt integer(almost(-inf), almost(inf))} means $\mathbb{Z}$
+\item {\tt extended(-inf, inf)} means $\mathbb{R} \cup \{-\infty, \infty\}$
+\item {\tt union(integer, real(0))} means
 
-\small
-\begin{minted}{python}
-h = db.dataset("ttbar-MC")
-  .withColumn(varName = "<Femtocode goes here>")
-  .filter("<Femtocode using varName>")
-  .flatMap("<Femtocode changing nesting level>")
-  .Label(hist1 = Bin(100, -5.0, 5.0, "<Femtocode>"),
-         hist2 = Bin(20, 0.0, 100.0, "<Femtocode>"),
-         hist3 = Bin(314, -pi, pi, "<Femtocode>"))
-\end{minted}
+\hfill $\mathbb{Z} \cup \{x | x \in \mathbb{R}\mbox{ and } x \ge 0\}$
+\end{itemize}
 
-\normalsize
-followed by Python analysis on {\small\tt h[\textcolor{darkred}{"hist1"}]}, {\small\tt h[\textcolor{darkred}{"hist2"}]}\ldots
-
-\vspace{0.1 cm}
+\vfill
 \begin{uncoverenv}<2->
-Everything in quotes is the statically checked and optimized big data pull; everything outside is flexible Python.
+\textcolor{darkorange}{\bf Why?}
 
-\vspace{0.1 cm}
-Histogrammar ({\tt\small Label} and {\tt\small Bin}) is a key component.
+\vspace{0.2 cm}
+To eliminate the possibility of runtime errors.
+
+\vspace{0.2 cm}
+With enough information in the type system, the compiler can identify runtime errors before submitting the job, saving the author time and protecting shared resources from waste.
+
+\vspace{0.2 cm}
+\textcolor{gray}{(Someday, they might be cloud-based and cost real money.)}
 \end{uncoverenv}
 \end{frame}
 
+\begin{frame}[fragile]{Working examples}
+\vspace{0.2 cm}
+\begin{lstlisting}[language=python]
+>>> propagateTypes("x / y", x=real, y=real)
+\end{lstlisting}
+\color{red}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+femtocode.parser.FemtocodeError: Function "/" does not accept arguments with the given types:
 
+    /(real,
+      real)
 
+    Real type allows for indeterminate form (0 / 0).
 
+Check line:col 1:0 (pos 0):
 
+    x / y
+----^
+\end{lstlisting}
+
+\textcolor{darkblue}{But applying a constraint changes the type of ``y'' within the ``if'' and ``else'' clauses.}
+\color{black}
+\begin{lstlisting}[language=python]
+>>> propagateTypes(
+...     """if y != 0: x / y else: None""",
+...     x=real, y=real)
+union(null, extended, extended)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Working examples}
+\vspace{0.5 cm}
+\begin{onlyenv}<1>
+\textcolor{darkblue}{``if'', ``and'', ``or'', and ``not'' propagate constraints.}
+\begin{lstlisting}[language=python]
+>>> propagateTypes("x == 5 and y == 6 and x == y",
+... x=real, y=real)
+\end{lstlisting}
+\color{red}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+femtocode.parser.FemtocodeError: Function "==" does not accept arguments with the given types:
+
+    ==(integer(min=5, max=5),
+       integer(min=6, max=6))
+
+    The argument types have no overlap (values can never be equal).
+
+Check line:col 1:27 (pos 27):
+
+    x == 5 and y == 6 and x == y
+-------------------------------^
+\end{lstlisting}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\textcolor{darkblue}{Order does not matter.}
+\begin{lstlisting}[language=python]
+>>> propagateTypes("x == y and x == 5 and y == 6",
+... x=real, y=real)
+\end{lstlisting}
+\color{red}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+femtocode.parser.FemtocodeError: Function "==" does not accept arguments with the given types:
+
+    ==(integer(min=5, max=5),
+       integer(min=6, max=6))
+
+    The argument types have no overlap (values can never be equal).
+
+Check line:col 1:5 (pos 5):
+
+    x == y and x == 5 and y == 6
+---------^
+\end{lstlisting}
+\end{onlyenv}
+
+\uncover<2>{\textcolor{gray}{(It's a short step from here to simplifying the algebra with SymPy.)}}
+\end{frame}
+
+\begin{frame}[fragile]{Working examples}
+\begin{lstlisting}[language=python]
+>>> tmpView("""a = x + y; b = a + y + z;
+... xs.map(x => x + x + a + a + b).map(y => y + 2);
+... """, xs=collection(real), x=real, y=real, z=real)
+\end{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+Call BuiltinFunction[".map"] has type collection(real)
+    Call BuiltinFunction[".map"] has type collection(real)
+        Ref xs (frame None) has type collection(real)
+        UserFunction has type real
+            Call BuiltinFunction["+"] has type real
+                Call BuiltinFunction["+"] has type real
+                    Call BuiltinFunction["+"] has type real
+                        Call BuiltinFunction["+"] has type real
+                            Ref x (frame 2) has type real
+                            Ref x (frame 2) has type real
+                        Call BuiltinFunction["+"] has type real
+                            Ref x (frame None) has type real
+                            Ref y (frame None) has type real
+                    Call BuiltinFunction["+"] has type real
+                        Ref x (frame None) has type real
+                        Ref y (frame None) has type real
+                Call BuiltinFunction["+"] has type real
+                    Call BuiltinFunction["+"] has type real
+                        Call BuiltinFunction["+"] has type real
+                            Ref x (frame None) has type real
+                            Ref y (frame None) has type real
+                        Ref y (frame None) has type real
+                    Ref z (frame None) has type real
+    UserFunction has type real
+        Call BuiltinFunction["+"] has type real
+            Ref y (frame 3) has type real
+            Literal 2 has type integer(min=2, max=2)
+\end{lstlisting}
+\end{frame}
 
 
 \end{document}
