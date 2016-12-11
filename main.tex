@@ -159,7 +159,7 @@ It need not be ``taken literally.''
 \end{itemize}
 
 \vspace{0.5 cm}
-\textcolor{darkblue}{{\it \underline{Single}} computer, {\it \underline{single}} thread:}
+\textcolor{darkblue}{{\it \underline{Single}} computer, {\it \underline{single}} thread, treat all data as an array:}
 
 \vspace{0.1 cm}
 \begin{description}
@@ -196,7 +196,7 @@ Directly filling histograms from the collaboration-wide repository, eliminating 
 As I said in \href{https://indico.cern.ch/event/544650/}{\textcolor{blue}{my June 20 talk}}, C++ and Python are too {\it expressive} to permit these kinds of optimizations.
 
 \vspace{0.5 cm}
-Automatic vectorization is (in general) an unsolved problem in computer science. But building a vectorizable language is relatively easy: they're just less capable. Typically, query languages like SQL are vectorized.
+Automatic vectorization (in general) is an unsolved problem in computer science. But building a vectorizable language is relatively easy: they're just less capable. Typically, query languages like SQL are vectorized.
 
 \vspace{0.5 cm}
 Business intelligence with SQL is typically ``interactive,'' and big data projects are pushing $\mathcal{O}(\mbox{second})$ response times to petabyte scales: Ibis, Impala, Kudu, Drill, \ldots\ others? (\href{http://research.google.com/pubs/pub36632.html}{\textcolor{blue}{Google paper}}).
@@ -286,7 +286,7 @@ tracks.filter(abs($1.eta) < 2.4)       # drop tracks
 \end{onlyenv}
 \end{frame}
 
-\begin{frame}[fragile]{Femtocode: tiny, declarative code snippets}
+\begin{frame}[fragile]{Femtocode}
 \vspace{0.4 cm}
 Combine the {\it implementation flexibility} of declarative languages like SQL with the {\it expressiveness} of a functional language for dealing with nested structure.
 
@@ -311,7 +311,7 @@ followed by Python analysis on {\small\tt h[\textcolor{darkred}{"hist1"}]}, {\sm
 
 \vspace{0.1 cm}
 \begin{uncoverenv}<3->
-\textcolor{darkblue}{Python manipulates streams of events and accepts the output, while Femtocode (in quotes) operates on events (remotely).}
+\textcolor{darkblue}{Python manipulates streams of events and accepts the result, while Femtocode (in quotes) operates on events (maybe remotely).}
 
 \vspace{0.1 cm}
 \textcolor{gray}{(Integrates with Histogrammar ({\tt\small Label}, {\tt\small Bin}) to aggregate result.)}
@@ -432,6 +432,7 @@ Check line:col 1:0 (pos 0):
 ----^
 \end{lstlisting}
 
+\begin{uncoverenv}<2->
 \textcolor{darkblue}{Applying a constraint changes the type of ``y'' in the ``if'' clause to {\tt\small union(real(max=almost(0)), real(min=almost(0)))}.}
 \color{black}
 \begin{lstlisting}[language=python]
@@ -439,6 +440,7 @@ Check line:col 1:0 (pos 0):
 ...     x=real, y=real)
 union(null, real)
 \end{lstlisting}
+\end{uncoverenv}
 \end{frame}
 
 \begin{frame}[fragile]{Working examples}
@@ -577,7 +579,7 @@ This statement-generation would be even better if it minimized the length of tim
 \begin{itemize}
 \item Syntax, parsing, abstract syntax tree.
 \item Type system, type propagation, type inference for {\tt +}, {\tt -}, {\tt *}, {\tt /}, {\tt //}, {\tt **}, {\tt \%}.
-\item Type constraints in ``if'', ``and'', ``or'', and ``not''.
+\item Type constriction in ``if'', ``and'', ``or'', and ``not''.
 \item Prototype for generating statements.
 \end{itemize}
 
@@ -585,10 +587,10 @@ This statement-generation would be even better if it minimized the length of tim
 \textcolor{darkblue}{To do:}
 \begin{itemize}
 \item Fully generate statements and evaluate on arrays.
-\item Implement a few more functions for basic usability.
+\item Implement a few more built-in functions for basic usability.
 \item Focus-group the syntax and scope: will this work for busy physicists?
 \item Get more feedback from Brian, Philippe, and other experts.
-\item Work with Jin Chang and Igor Mandrichenko on server.
+\item Work with Jin Chang and Igor Mandrichenko on the server.
 \item Discuss with ROOT Team about the possibility of this becoming the ROOT 7 TTreeFormula.
 \end{itemize}
 \end{frame}
