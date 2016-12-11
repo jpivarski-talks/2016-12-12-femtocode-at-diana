@@ -193,7 +193,7 @@ Directly filling histograms from the collaboration-wide repository, eliminating 
 
 \begin{frame}{What's wrong with the languages we have?}
 \vspace{0.25 cm}
-As I said in \href{https://indico.cern.ch/event/544650/}{\textcolor{blue}{my June 20 talk}}, C++ and Python are too expressive to permit these kinds of optimizations.
+As I said in \href{https://indico.cern.ch/event/544650/}{\textcolor{blue}{my June 20 talk}}, C++ and Python are too {\it expressive} to permit these kinds of optimizations.
 
 \vspace{0.5 cm}
 Automatic vectorization is (in general) an unsolved problem in computer science. But building a vectorizable language is relatively easy: they're just less capable. Typically, query languages like SQL are vectorized.
@@ -291,6 +291,7 @@ tracks.filter(abs($1.eta) < 2.4)       # drop tracks
 Combine the {\it implementation flexibility} of declarative languages like SQL with the {\it expressiveness} of a functional language for dealing with nested structure.
 
 \vspace{0.5 cm}
+\begin{uncoverenv}<2->
 {\bf Example use in Python:}
 
 \small
@@ -306,13 +307,14 @@ h = db.dataset("ttbar-MC")
 
 \normalsize
 followed by Python analysis on {\small\tt h[\textcolor{darkred}{"hist1"}]}, {\small\tt h[\textcolor{darkred}{"hist2"}]}\ldots
+\end{uncoverenv}
 
 \vspace{0.1 cm}
-\begin{uncoverenv}<2->
-\textcolor{darkblue}{Python manipulates streams of events and accepts the output, while Femtocode (in quotes) operates on individual events.}
+\begin{uncoverenv}<3->
+\textcolor{darkblue}{Python manipulates streams of events and accepts the output, while Femtocode (in quotes) operates on events (remotely).}
 
 \vspace{0.1 cm}
-Integrates with Histogrammar ({\tt\small Label}, {\tt\small Bin}) to aggregate result.
+\textcolor{gray}{(Integrates with Histogrammar ({\tt\small Label}, {\tt\small Bin}) to aggregate result.)}
 \end{uncoverenv}
 \end{frame}
 
@@ -587,7 +589,7 @@ This statement-generation would be even better if it minimized the length of tim
 \item Focus-group the syntax and scope: will this work for busy physicists?
 \item Get more feedback from Brian, Philippe, and other experts.
 \item Work with Jin Chang and Igor Mandrichenko on server.
-\item Discuss with ROOT Team about value as a ROOT 7 TTreeFormula replacement.
+\item Discuss with ROOT Team about the possibility of this becoming the ROOT 7 TTreeFormula.
 \end{itemize}
 \end{frame}
 
