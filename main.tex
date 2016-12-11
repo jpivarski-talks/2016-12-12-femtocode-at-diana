@@ -83,238 +83,238 @@
 %  \tableofcontents
 %\end{frame}
 
-%% \begin{frame}{Motivations}
-%% \textcolor{darkblue}{\underline{Specific motivation}: to accelerate data pulls, both}
+\begin{frame}{Motivations}
+\textcolor{darkblue}{\underline{Specific motivation}: to accelerate data pulls, both}
 
-%% \begin{center}
-%% \begin{columns}
-%% \column{0.1\linewidth}
+\begin{center}
+\begin{columns}
+\column{0.1\linewidth}
 
-%% \column{0.28\linewidth}
-%% \centering \textcolor{darkblue}{for the humans}
+\column{0.28\linewidth}
+\centering \textcolor{darkblue}{for the humans}
 
-%% {\it shorter time from concept to code}
+{\it shorter time from concept to code}
 
-%% \column{0.05\linewidth}
-%% \centering \textcolor{darkblue}{and}
+\column{0.05\linewidth}
+\centering \textcolor{darkblue}{and}
 
-%% \column{0.28\linewidth}
-%% \centering \textcolor{darkblue}{for the computers.}
+\column{0.28\linewidth}
+\centering \textcolor{darkblue}{for the computers.}
 
-%% {\it shorter time from code to results}
+{\it shorter time from code to results}
 
-%% \column{0.1\linewidth}
-%% \end{columns}
-%% \end{center}
+\column{0.1\linewidth}
+\end{columns}
+\end{center}
 
-%% \vspace{0.2 cm}
-%% \textcolor{gray}{(By ``data pull,'' I mean extract, transform, and filter data from a collaboration's central dataset and download it for further processing. Right now, we're writing C++ modules.)}
+\vspace{0.2 cm}
+\textcolor{gray}{(By ``data pull,'' I mean extract, transform, and filter data from a collaboration's central dataset (AOD) and download it for further processing. Right now, we're writing C++ modules.)}
 
-%% \vspace{0.5 cm}
-%% \begin{uncoverenv}<2->
-%% \textcolor{darkblue}{``\underline{Chip on my shoulder}''}
+\vspace{0.5 cm}
+\begin{uncoverenv}<2->
+\textcolor{darkblue}{``\underline{Chip on my shoulder}''}
 
-%% \vspace{0.2 cm}
-%% To show that a very high-level, abstract view of computation can nevertheless be fast.
-%% \end{uncoverenv}
-%% \end{frame}
+\vspace{0.2 cm}
+To show that a very high-level, abstract view of computation can nevertheless be fast.
+\end{uncoverenv}
+\end{frame}
 
-%% \begin{frame}[fragile]{High-level and speed are not antithetical}
-%% \vspace{0.5 cm}
-%% \begin{columns}
-%% \column{0.55\linewidth}
-%% Code like
+\begin{frame}[fragile]{High-level and speed are not antithetical}
+\vspace{0.5 cm}
+\begin{columns}
+\column{0.55\linewidth}
+Code like
 
-%% \small
-%% \begin{minted}{scala}
-%% bestmuon =
-%%   muons.filter(m => m.iso > 10)
-%%        .maxBy(m => m.pt)
-%% \end{minted}
-%% \vspace{0.4 cm}
+\small
+\begin{minted}{scala}
+bestmuon =
+  muons.filter(m => m.iso > 10)
+       .maxBy(m => m.pt)
+\end{minted}
+\vspace{0.4 cm}
 
-%% \column{0.35\linewidth}
-%% \\ does {\it not} need to create function objects or muon objects at runtime!
+\column{0.35\linewidth}
+\\ does {\it not} need to create function objects or muon objects at runtime!
 
-%% \vspace{0.2 cm}
-%% It need not be ``taken literally.''
-%% \end{columns}
+\vspace{0.2 cm}
+It need not be ``taken literally.''
+\end{columns}
 
-%% \vspace{0.5 cm}
-%% \textcolor{darkblue}{Another possible execution plan:}
-%% \begin{enumerate}
-%% \item Start with all {\tt\small muon.iso} values in one array, all {\tt\small muon.pt} values in another array, and a ``repetition level'' to specify where events begin and end.
-%% \item Apply the contents of the filter function to make a mask.
-%% \item Use the mask and repetition level to compact the {\tt\small muon.pt} into zero or one results per event.
-%% \end{enumerate}
-%% \end{frame}
+\vspace{0.5 cm}
+\textcolor{darkblue}{Another possible execution plan:}
+\begin{enumerate}
+\item Start with all {\tt\small muon.iso} values in one array, all {\tt\small muon.pt} values in another array, and a ``repetition level'' to specify where events begin and end.
+\item Apply the contents of the filter function to make a mask.
+\item Use the mask and repetition level to compact the {\tt\small muon.pt} into zero or one results per event.
+\end{enumerate}
+\end{frame}
 
-%% \begin{frame}{How fast {\it should} it be?}
-%% \vspace{0.3 cm}
-%% \textcolor{darkorange}{\bf Suppose we want to plot all CMS $t\bar{t}$ data ever collected.}
-%% \begin{itemize}
-%% \item About 100~fb$^{-1}$ (\href{http://cms-service-lumi.web.cern.ch/cms-service-lumi/publicplots/int_lumi_cumulative_pp_1.png}{\textcolor{blue}{plot}}) $\times$ 1~nb (\href{https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/CombinedSummaryPlots/SM/ATLAS_p_SMSummary_SqrtS_Zoom/ATLAS_p_SMSummary_SqrtS_Zoom.png}{\textcolor{blue}{plot}}) is 100 million events.
-%% \item Derivation of a plotted quantity could involve $\mathcal{O}(100)$ double-precision values per event.
-%% \item That's only 80~GB of data that needs to be evaluated; anything else is overhead.
-%% \end{itemize}
+\begin{frame}{How fast {\it should} it be?}
+\vspace{0.3 cm}
+\textcolor{darkorange}{\bf Suppose we want to plot all CMS $t\bar{t}$ data ever collected.}
+\begin{itemize}
+\item About 100~fb$^{-1}$ (\href{http://cms-service-lumi.web.cern.ch/cms-service-lumi/publicplots/int_lumi_cumulative_pp_1.png}{\textcolor{blue}{plot}}) $\times$ 1~nb (\href{https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/CombinedSummaryPlots/SM/ATLAS_p_SMSummary_SqrtS_Zoom/ATLAS_p_SMSummary_SqrtS_Zoom.png}{\textcolor{blue}{plot}}) is 100 million events.
+\item Derivation of a plotted quantity could involve $\mathcal{O}(100)$ double-precision values per event.
+\item That's only 80~GB of data that needs to be evaluated; anything else is overhead.
+\end{itemize}
 
-%% \vspace{0.5 cm}
-%% \textcolor{darkblue}{{\it \underline{Single}} computer, {\it \underline{single}} thread:}
+\vspace{0.5 cm}
+\textcolor{darkblue}{{\it \underline{Single}} computer, {\it \underline{single}} thread:}
 
-%% \vspace{0.1 cm}
-%% \begin{description}
-%% \item[load from disk:] 21 minutes (Numpy), 22 minutes (ROOT)
-%% \item[CPU execution:] 70 seconds (no optimization), 13 seconds ({\tt -O3})
-%% \item[GPU execution:] 12 seconds to copy to GPU, 5 seconds to compute
-%% \end{description}
+\vspace{0.1 cm}
+\begin{description}
+\item[load from disk:] 21 minutes (Numpy), 22 minutes (ROOT)
+\item[CPU execution:] 70 seconds (no optimization), 13 seconds ({\tt -O3})
+\item[GPU execution:] 12 seconds to copy to GPU, 5 seconds to compute
+\end{description}
 
-%% \vspace{0.1 cm}
-%% \textcolor{gray}{(Probably close to ``theoretical minimum.'' Distributed processing and multi-user cache can help.)}
-%% \end{frame}
+\vspace{0.1 cm}
+\textcolor{gray}{(Probably close to ``theoretical optimum.'' Distributed processing and multi-user cache can help.)}
+\end{frame}
 
-%% \begin{frame}{Role of language}
-%% \vspace{0.5 cm}
-%% Directly filling histograms from the collaboration-wide repository, eliminating private skims, would fundamentally improve analysis workflows. Analysis could become ``interactive.''
+\begin{frame}{Role of language}
+\vspace{0.5 cm}
+Directly filling histograms from the collaboration-wide repository, eliminating private skims, would fundamentally improve analysis workflows. Analysis could become ``interactive.''
 
-%% \vspace{0.5 cm}
-%% \textcolor{darkblue}{But\ldots\ how can a language help?}
+\vspace{0.5 cm}
+\textcolor{darkblue}{But\ldots\ how can a language help?}
 
-%% \begin{uncoverenv}<2->
-%% \vspace{0.3 cm}
-%% \begin{itemize}
-%% \item Writing vectorized, one-array-at-a-time algorithms is unnatural, distracting from analysis.
-%% \item Physicists {\it should} be thinking about one event at a time and muons as objects.
-%% \end{itemize}
+\begin{uncoverenv}<2->
+\vspace{0.3 cm}
+\begin{itemize}
+\item Writing vectorized, one-array-at-a-time algorithms is unnatural, distracting from analysis.
+\item Physicists {\it should} be thinking about one event at a time and muons as objects.
+\end{itemize}
 
-%% \vspace{0.3 cm}
-%% \textcolor{darkblue}{Transforming human concepts into physical execution is exactly what programming languages are for.}
-%% \end{uncoverenv}
-%% \end{frame}
+\vspace{0.3 cm}
+\textcolor{darkblue}{Transforming human concepts into physical execution is exactly what programming languages are for.}
+\end{uncoverenv}
+\end{frame}
 
-%% \begin{frame}{What's wrong with the languages we have?}
-%% \vspace{0.25 cm}
-%% As I said in \href{https://indico.cern.ch/event/544650/}{\textcolor{blue}{my June 20 talk}}, C++ and Python are too expressive to permit these kinds of optimizations.
+\begin{frame}{What's wrong with the languages we have?}
+\vspace{0.25 cm}
+As I said in \href{https://indico.cern.ch/event/544650/}{\textcolor{blue}{my June 20 talk}}, C++ and Python are too expressive to permit these kinds of optimizations.
 
-%% \vspace{0.5 cm}
-%% Automatic vectorization is (in general) an unsolved problem in computer science. But building a vectorizable language is relatively easy: they're just less capable. Typically, query languages are vectorizable.
+\vspace{0.5 cm}
+Automatic vectorization is (in general) an unsolved problem in computer science. But building a vectorizable language is relatively easy: they're just less capable. Typically, query languages like SQL are vectorized.
 
-%% \vspace{0.5 cm}
-%% Business intelligence with SQL is typically ``interactive,'' and big data projects are pushing $\mathcal{O}(\mbox{second})$ response times to petabyte scales: Ibis, Impala, Kudu, Drill, \ldots\ others? (\href{http://research.google.com/pubs/pub36632.html}{\textcolor{blue}{Google paper}}).
+\vspace{0.5 cm}
+Business intelligence with SQL is typically ``interactive,'' and big data projects are pushing $\mathcal{O}(\mbox{second})$ response times to petabyte scales: Ibis, Impala, Kudu, Drill, \ldots\ others? (\href{http://research.google.com/pubs/pub36632.html}{\textcolor{blue}{Google paper}}).
 
-%% \vspace{0.5 cm}
-%% \textcolor{darkorange}{\bf However, SQL and its relatives are not sufficient for us.}
-%% \end{frame}
+\vspace{0.5 cm}
+\textcolor{darkorange}{\bf However, SQL and its relatives are not sufficient for us.}
+\end{frame}
 
-%% \begin{frame}[fragile]{Nested query in SQL}
-%% \vspace{0.5 cm}
-%% {\bf Example query:}
-%% \begin{center}
-%% \begin{minipage}{0.95\linewidth}
-%% \textcolor{darkblue}{``Momentum of the track with $|\eta|$ $<$ 2.4 that has the most hits.''}
-%% \end{minipage}
-%% \end{center}
-%% \small
-%% \begin{minted}{sql}
-%% WITH hit_stats AS (
-%%   SELECT hit.track_id, COUNT(*) AS hit_count FROM hit
-%%     GROUP BY hit.track_id),
-%%  track_sorted AS (
-%%     SELECT track.*, 
-%%     ROW_NUMBER() OVER (
-%%      PARTITION BY track.event_id
-%%      ORDER BY hit_stats.hit_count DESC)
-%%   track_ordinal FROM track INNER JOIN hit_stats
-%%     ON hit_stats.track_id = track.id
-%%     WHERE ABS(track.eta) < 2.4)
-%%  SELECT * FROM event INNER JOIN track_sorted
-%%    ON track_sorted.event_id = event.id
-%% WHERE
-%%   track_sorted.track_ordinal = 1
-%% \end{minted}
-%% \end{frame}
+\begin{frame}[fragile]{Nested query in C++}
+\vspace{0.5 cm}
+{\bf Example query:}
+\begin{center}
+\begin{minipage}{0.95\linewidth}
+\textcolor{darkblue}{``Momentum of the track with $|\eta|$ $<$ 2.4 that has the most hits.''}
+\end{minipage}
+\end{center}
+\small
+\begin{minted}{c++}
+Track *best = NULL;
+for (int i = 0;  i < tracks.size();  i++) {
+  if (fabs(tracks[i]->eta) < 2.4)
+    if (best == NULL ||
+        tracks[i]->hits.size() > best->hits.size())
+      best = tracks[i];
+}
+if (best != NULL)
+  return best->pt;
+else
+  return 0.0;
+\end{minted}
+\end{frame}
 
-%% \begin{frame}[fragile]{Nested query in C++}
-%% \vspace{0.5 cm}
-%% {\bf Example query:}
-%% \begin{center}
-%% \begin{minipage}{0.95\linewidth}
-%% \textcolor{darkblue}{``Momentum of the track with $|\eta|$ $<$ 2.4 that has the most hits.''}
-%% \end{minipage}
-%% \end{center}
-%% \small
-%% \begin{minted}{c++}
-%% Track *best = NULL;
-%% for (int i = 0;  i < tracks.size();  i++) {
-%%   if (fabs(tracks[i]->eta) < 2.4)
-%%     if (best == NULL ||
-%%         tracks[i]->hits.size() > best->hits.size())
-%%       best = tracks[i];
-%% }
-%% if (best != NULL)
-%%   return best->pt;
-%% else
-%%   return 0.0;
-%% \end{minted}
-%% \end{frame}
+\begin{frame}[fragile]{Nested query in SQL}
+\vspace{0.5 cm}
+{\bf Example query:}
+\begin{center}
+\begin{minipage}{0.95\linewidth}
+\textcolor{darkblue}{``Momentum of the track with $|\eta|$ $<$ 2.4 that has the most hits.''}
+\end{minipage}
+\end{center}
+\small
+\begin{minted}{sql}
+WITH hit_stats AS (
+  SELECT hit.track_id, COUNT(*) AS hit_count FROM hit
+    GROUP BY hit.track_id),
+ track_sorted AS (
+    SELECT track.*, 
+    ROW_NUMBER() OVER (
+     PARTITION BY track.event_id
+     ORDER BY hit_stats.hit_count DESC)
+  track_ordinal FROM track INNER JOIN hit_stats
+    ON hit_stats.track_id = track.id
+    WHERE ABS(track.eta) < 2.4)
+ SELECT * FROM event INNER JOIN track_sorted
+   ON track_sorted.event_id = event.id
+WHERE
+  track_sorted.track_ordinal = 1
+\end{minted}
+\end{frame}
 
-%% \begin{frame}[fragile]{Nested query in Femtocode}
-%% \vspace{0.5 cm}
-%% {\bf Example query:}
-%% \begin{center}
-%% \begin{minipage}{0.95\linewidth}
-%% \textcolor{darkblue}{``Momentum of the track with $|\eta|$ $<$ 2.4 that has the most hits.''}
-%% \end{minipage}
-%% \end{center}
-%% \small
-%% \begin{onlyenv}<1>
-%% \begin{minted}{scala}
-%% event.tracks
-%%      .filter(t => abs(t.eta) < 2.4)
-%%      .maxBy(t => t.hits.size)
-%%      .map(t => t.pt)
-%%      .impute(0.0)
-%% \end{minted}
-%% \end{onlyenv}
-%% \begin{onlyenv}<2>
-%% \begin{minted}{bash}
-%% event.tracks
-%%      .filter(abs($1.eta) < 2.4)
-%%      .maxBy($1.hits.size)
-%%      .map($1.pt)
-%%      .impute(0.0)
-%% \end{minted}
-%% \end{onlyenv}
-%% \end{frame}
+\begin{frame}[fragile]{Nested query in Femtocode}
+\vspace{0.5 cm}
+{\bf Example query:}
+\begin{center}
+\begin{minipage}{0.95\linewidth}
+\textcolor{darkblue}{``Momentum of the track with $|\eta|$ $<$ 2.4 that has the most hits.''}
+\end{minipage}
+\end{center}
+\small
+\begin{onlyenv}<1>
+\begin{minted}{scala}
+event.tracks
+     .filter(t => abs(t.eta) < 2.4)
+     .maxBy(t => t.hits.size)
+     .map(t => t.pt)
+     .impute(0.0)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{minted}{bash}
+event.tracks
+     .filter(abs($1.eta) < 2.4)
+     .maxBy($1.hits.size)
+     .map($1.pt)
+     .impute(0.0)
+\end{minted}
+\end{onlyenv}
+\end{frame}
 
-%% \begin{frame}[fragile]{Femtocode: tiny, declarative code snippets}
-%% \vspace{0.4 cm}
-%% Combine the {\it implementation flexibility} of declarative languages like SQL with the {\it expressiveness} of a functional language for dealing with nested structure.
+\begin{frame}[fragile]{Femtocode: tiny, declarative code snippets}
+\vspace{0.4 cm}
+Combine the {\it implementation flexibility} of declarative languages like SQL with the {\it expressiveness} of a functional language for dealing with nested structure.
 
-%% \vspace{0.5 cm}
-%% {\bf Example use:}
+\vspace{0.5 cm}
+{\bf Example use in Python:}
 
-%% \small
-%% \begin{minted}{python}
-%% h = db.dataset("ttbar-MC")
-%%   .withColumn(varName = "<Femtocode goes here>")
-%%   .filter("<Femtocode using varName>")
-%%   .flatMap("<Femtocode changing nesting level>")
-%%   .Label(hist1 = Bin(100, -5.0, 5.0, "<Femtocode>"),
-%%          hist2 = Bin(20, 0.0, 100.0, "<Femtocode>"),
-%%          hist3 = Bin(314, -pi, pi, "<Femtocode>"))
-%% \end{minted}
+\small
+\begin{minted}{python}
+h = db.dataset("ttbar-MC")
+  .withColumn(varName = "<Femtocode goes here>")
+  .filter("<Femtocode using varName>")
+  .flatMap("<Femtocode changing nesting level>")
+  .Label(hist1 = Bin(100, -5.0, 5.0, "<Femtocode>"),
+         hist2 = Bin(20, 0.0, 100.0, "<Femtocode>"),
+         hist3 = Bin(314, -pi, pi, "<Femtocode>"))
+\end{minted}
 
-%% \normalsize
-%% followed by Python analysis on {\small\tt h[\textcolor{darkred}{"hist1"}]}, {\small\tt h[\textcolor{darkred}{"hist2"}]}\ldots
+\normalsize
+followed by Python analysis on {\small\tt h[\textcolor{darkred}{"hist1"}]}, {\small\tt h[\textcolor{darkred}{"hist2"}]}\ldots
 
-%% \vspace{0.1 cm}
-%% \begin{uncoverenv}<2->
-%% Everything in quotes is the statically checked and optimized big data pull; everything outside is flexible Python.
+\vspace{0.1 cm}
+\begin{uncoverenv}<2->
+Everything in quotes is the statically checked and optimized big data pull; everything outside is flexible Python.
 
-%% \vspace{0.1 cm}
-%% Histogrammar ({\tt\small Label} and {\tt\small Bin}) is a necessary component.
-%% \end{uncoverenv}
-%% \end{frame}
+\vspace{0.1 cm}
+Histogrammar ({\tt\small Label} and {\tt\small Bin}) is a necessary component.
+\end{uncoverenv}
+\end{frame}
 
 \begin{frame}[fragile]{Working examples}
 \vspace{0.3 cm}
@@ -387,7 +387,7 @@ collection(real(min=3.0, max=105.0))
 
 \begin{frame}{Type system is highly granular}
 \vspace{0.5 cm}
-Collections have \textcolor{darkblue}{fewest} and \textcolor{darkblue}{most} size attributes, numbers have \textcolor{darkblue}{min} and \textcolor{darkblue}{max} intervals:
+Collections have \textcolor{darkblue}{fewest} and \textcolor{darkblue}{most} size attributes, and numbers have \textcolor{darkblue}{min} and \textcolor{darkblue}{max} intervals:
 \begin{itemize}
 \item {\tt real(almost(0), 10)} means $\{x | x \in \mathbb{R}\mbox{ and } 0 < x \le 10\}$
 \item {\tt integer(almost(-inf), almost(inf))} means $\mathbb{Z}$
@@ -424,7 +424,7 @@ femtocode.parser.FemtocodeError: Function "/" does not accept arguments with the
     /(real,
       real)
 
-    Real type allows for indeterminate form (0 / 0).
+    Indeterminate form (0 / 0) is possible; constrain with if-else.
 
 Check line:col 1:0 (pos 0):
 
@@ -432,13 +432,13 @@ Check line:col 1:0 (pos 0):
 ----^
 \end{lstlisting}
 
-\textcolor{darkblue}{But applying a constraint changes the type of ``y'' within the ``if'' and ``else'' clauses.}
+\textcolor{darkblue}{Applying a constraint changes the type of ``y'' within the ``if'' and ``else'' clauses.}
 \color{black}
 \begin{lstlisting}[language=python]
 >>> propagateTypes(
 ...     """if y != 0: x / y else: None""",
 ...     x=real, y=real)
-union(null, extended, extended)
+union(null, real)
 \end{lstlisting}
 \end{frame}
 
@@ -491,11 +491,28 @@ Check line:col 1:5 (pos 5):
 \end{frame}
 
 \begin{frame}[fragile]{Working examples}
+\begin{onlyenv}<1>
 \begin{lstlisting}[language=python]
->>> tmpView("""a = x + y; b = a + y + z;
-... xs.map(x => x + x + a + a + b).map(y => y + 2);
-... """, xs=collection(real), x=real, y=real, z=real)
+>>> viewAsTree("""
+... a = x + y;
+... b = a + y + z;
+... xs.map(x => x + a + a + b).map(y => y + 2)""",
+... xs=collection(real), x=real, y=real, z=real)
 \end{lstlisting}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{lstlisting}[language=python]
+>>> viewAsStatements("""
+... a = x + y;
+... b = a + y + z;
+... xs.map(x => x + a + a + b).map(y => y + 2)""",
+... xs=collection(real), x=real, y=real, z=real)
+\end{lstlisting}
+\end{onlyenv}
+
+\vspace{-0.5 cm}
+\begin{minipage}[t][12cm][t]{\textwidth}
+\begin{onlyenv}<1>
 \begin{lstlisting}[basicstyle=\ttfamily\tiny]
 Call BuiltinFunction[".map"] has type collection(real)
     Call BuiltinFunction[".map"] has type collection(real)
@@ -504,9 +521,7 @@ Call BuiltinFunction[".map"] has type collection(real)
             Call BuiltinFunction["+"] has type real
                 Call BuiltinFunction["+"] has type real
                     Call BuiltinFunction["+"] has type real
-                        Call BuiltinFunction["+"] has type real
-                            Ref x (frame 2) has type real
-                            Ref x (frame 2) has type real
+                        Ref x (frame 2) has type real
                         Call BuiltinFunction["+"] has type real
                             Ref x (frame None) has type real
                             Ref y (frame None) has type real
@@ -525,6 +540,21 @@ Call BuiltinFunction[".map"] has type collection(real)
             Ref y (frame 3) has type real
             Literal 2 has type integer(min=2, max=2)
 \end{lstlisting}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{lstlisting}[basicstyle=\ttfamily]
+tmp_0 := (+ x y)
+tmp_1 := (+ xs tmp_0)
+tmp_2 := (+ x y)
+tmp_3 := (+ tmp_1 tmp_2)
+tmp_4 := (+ x y)
+tmp_5 := (+ tmp_4 y)
+tmp_6 := (+ tmp_5 z)
+tmp_7 := (+ tmp_3 tmp_6)
+tmp_8 := (+ tmp_7 2)
+\end{lstlisting}
+\end{onlyenv}
+\end{minipage}
 \end{frame}
 
 
